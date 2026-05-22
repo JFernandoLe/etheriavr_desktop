@@ -1,34 +1,32 @@
-import time
-from services.discovery_service import DiscoveryService
-from services.midi_service import MidiManager 
-from services.vocal_service import VocalManager
-
-BANNER = """
-.-----------------------------------------------------------.
-|  ETHERIAVR - SERVICE DISCOVERY ACTIVE                     |
-|  Status: UP                   |
-'-----------------------------------------------------------'
 """
+Punto de entrada principal del sistema de captura MIDI y envío en tiempo real a Meta Quest.
+Este módulo se encarga de:
+1. Descubrimiento del Meta Quest vía UDP
+2. Captura de datos MIDI del instrumento conectado
+3. Envío de eventos MIDI al Meta Quest en tiempo real
+"""
+from main_realtime import iniciar_procesamiento_en_tiempo_real
 
-def run():
-    print(BANNER)
+
+def main():
+    """Inicia el procesamiento en tiempo real de MIDI"""
+    print("=" * 60)
+    print("EtheriaVR Desktop - Sistema de Captura MIDI")
+    print("=" * 60)
+    print("Esperando conexión del Meta Quest...")
+    print("Asegúrate de que:")
+    print("  1. El Meta Quest esté encendido")
+    print("  2. Ambos dispositivos estén en la misma red Wi-Fi")
+    print("  3. Tu instrumento MIDI esté conectado")
+    print("=" * 60)
     
-    mode=1; #0 para midi, 1 para canto    
-    
-    # 1. Fase de Descubrimiento (Escucha el "grito" del Quest)
-    discovery = DiscoveryService()
-    quest_ip = discovery.find_quest_ip()
-    
-    if quest_ip:
-        print(f"[*] Estableciendo puente UDP con {quest_ip}...")
-        if mode==0:
-            midi_service = MidiManager(quest_ip)
-            midi_service.start_listening()
-        elif mode==1:
-            vocal = VocalManager(quest_ip)
-            vocal.start_processing()    
-    else:
-        print("[!] No se pudo obtener la IP del Quest. Abortando.")
+    try:
+        iniciar_procesamiento_en_tiempo_real()
+    except KeyboardInterrupt:
+        print("\n\nSistema detenido por el usuario")
+    except Exception as e:
+        print(f"\n\nError: {e}")
+
 
 if __name__ == "__main__":
-    run()
+    main()
