@@ -23,9 +23,10 @@ NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F",
 
 class VocalManager:
 
-    def __init__(self, quest_ip, port=None):
+    def __init__(self, quest_ip, port=None, device_index=0):
         self.quest_ip = quest_ip
         self.port = port or int(os.getenv("UDP_PORT"))
+        self.device_index = device_index
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         self.packet_count = 0
@@ -213,7 +214,7 @@ class VocalManager:
         print(f"[*] Vocal Engine activo → Enviando a {self.quest_ip}:{self.port}")
 
         with sd.InputStream(
-            device=DEVICE_INDEX,
+            device=self.device_index,
             channels=1,
             samplerate=SAMPLE_RATE,
             blocksize=FRAME_SIZE,
